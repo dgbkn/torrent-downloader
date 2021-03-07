@@ -1,0 +1,21 @@
+{
+    "name": "torrent-downloader",
+    "version": "1.0.0",
+    "description": "Simple Torrent downloader with seedr.cc and YTS",
+    "main": "index.js",
+    "repository": "https://github.com/l0u1sg/torrent-downloader.git",
+    "author": "Louis GALLET <louis.gallet@tumo.world>",
+    "scripts": {
+        "start": "nodemon server.js"
+    },
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "axios": "^0.21.1",
+        "dotenv": "^8.2.0",
+        "seedr": "^1.1.2"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.7"
+    }
+}
