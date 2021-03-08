@@ -1,5 +1,6 @@
 const axios = require("axios")
 const Seedr = require("seedr")
+const sleep = require("sleep")
 const TelegramBot = require('node-telegram-bot-api');
 var seedr = new Seedr();
 require('dotenv').config()
@@ -36,15 +37,31 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 });
 bot.onText(/\/search (.+)/, (msg, match) => {
     const chatID = msg.chat.id
-    const resp = `All right, I'm looking for ${match[1]} at the YTS API. Please wait`
+    let resp = `All right, I'm looking for ${match[1]} at the YTS API. Please wait`
     const uri = match[1]
     const encoded = encodeURI(uri)
     bot.sendMessage(chatID, resp)
     console.log(encoded)
 
     axios.get(`https://yts.mx/api/v2/list_movies.json?query_term=${uri}`).then((res) => {
-        if (res.data.data[0] === 0) {
-            bot.sendMessage(chatID, "Désolé, je n'ai pas trouvé de film avec ce nom")
+        if (res.data.data.movie_count === 0) {
+            resp = `Sorry, I couldn't find any film corresponding to your request, could you please specify?`
+            bot.sendMessage(chatID, resp)
+        }
+        else if (res.data.data.movie_count === 1) {
+            bot.sendMessage(chatID, "I only found one film corresponding to your request... Here it is:")
+        }
+        else {
+            bot.sendMessage(chatID, `I found ... films corresponding to your search, here they are. `)
+            sleep.sleep(1);
+            const tab = res.data.data.movies;
+            for (let b = 0; b<tab.length; b++) {
+                bot.sendMessage(chatID, `Film ${b} : ${res.data.data.movies[b].title_long}`)
+                sleep.sleep(1);
+            }
+            sleep.sleep(1);
+            bot.sendMessage(chatID, `Tell me which one you want, by typing the corresponding number. `)
+            
         }
     })
 })
