@@ -6,10 +6,11 @@
     "repository": "https://github.com/l0u1sg/torrent-downloader.git",
     "author": "Louis GALLET <louis.gallet@tumo.world>",
     "scripts": {
-        "start": "nodemon server.js"
+        "dev": "nodemon server.js",
+        ".": "node server.js"
     },
     "license": "MIT",
-    "private": true,
+    "private": false,
     "dependencies": {
         "axios": "^0.21.1",
         "dotenv": "^8.2.0",
