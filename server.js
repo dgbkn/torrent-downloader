@@ -22,7 +22,14 @@ if (!process.env.SIGNAL_TOKEN) {
 
 console.log("👍   All the first validations have been passed correctly ")
 const token = process.env.SIGNAL_TOKEN;
+seedr.getToken(process.env.SEEDR_TOKEN);
 const bot = new TelegramBot(token, { polling: true });
+
+function createMagnet(torrentHash, encodedURI) {
+    let url = `magnet:?xt=urn:btih:${torrentHash}&dn={encodedURI}&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce`
+    seedr.addMagnet(url);
+}
+
 console.log("🗼   Torrent Download Bot is online")
 bot.onText(/\/echo (.+)/, (msg, match) => {
     // 'msg' is the received Message from Telegram
@@ -49,19 +56,28 @@ bot.onText(/\/search (.+)/, (msg, match) => {
             bot.sendMessage(chatID, resp)
         }
         else if (res.data.data.movie_count === 1) {
-            bot.sendMessage(chatID, "I only found one film corresponding to your request... Here it is:")
+            bot.sendMessage(chatID, `I only found one film corresponding to your request... Here it is: ${res.data.data.movies[0]}. I import it in Seedr`)
+            createMagnet(res.data.data.movies[0].torrents[1].hash, encoded)
+
         }
         else {
             bot.sendMessage(chatID, `I found ... films corresponding to your search, here they are. `)
             sleep.sleep(1);
             const tab = res.data.data.movies;
-            for (let b = 0; b<tab.length; b++) {
+            for (let b = 0; b < tab.length; b++) {
                 bot.sendMessage(chatID, `Film ${b} : ${res.data.data.movies[b].title_long}`)
                 sleep.sleep(1);
             }
             sleep.sleep(1);
-            bot.sendMessage(chatID, `Tell me which one you want, by typing the corresponding number. `)
-            
+            bot.sendMessage(chatID, `Tell me which one you want, by replying to this message and by typing the corresponding number. `)
+            let response = bot.onReplyToMessage((msg, match))
+            if (response > tab.length) {
+                bot.sendMessage(chatID, `Sorry, but the number you gave is not good! `)
+            }
+            else {
+
+            }
+
         }
     })
 })

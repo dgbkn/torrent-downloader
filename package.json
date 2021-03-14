@@ -7,7 +7,8 @@
     "author": "Louis GALLET <louis.gallet@tumo.world>",
     "scripts": {
         "dev": "nodemon server.js",
-        ".": "node server.js"
+        ".": "node server.js",
+        "test": "node test.js"
     },
     "license": "MIT",
     "private": false,
